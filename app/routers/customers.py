@@ -14,10 +14,6 @@ async def create_customer(customer_data: CustomerCreate, session: SessionDep):
     session.add(customer)
     session.commit()
     session.refresh(customer)
-    
-    # Asumiento que el ID se genera automáticamente en la base de datos
-    # customer.id = len(db_customers)
-    # db_customers.append(customer)
     return customer
 
 @router.get("/customers/{customer_id}", response_model=Customer, tags=["customers"])
