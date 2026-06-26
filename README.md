@@ -15,14 +15,35 @@ Aplicación de pruebas desarrollada durante el curso de FastAPI de Platzi. Este 
 ## Requisitos
 
 - Python >= 3.11
-- UV (gestor de paquetes de Python)
+
+## Instalar UV
+
+UV es un gestor de paquetes de Python rápido y moderno. Si no lo tienes instalado, puedes instalarlo con:
+
+```bash
+# En macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# En Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Con pip (alternativa)
+pip install uv
+```
+
+Más información: https://github.com/astral-sh/uv
+
+## Extensiones extras:
+- Ruff
+- Ty
+- Darktheme de Devin de Cognition (antes windsurf)
 
 ## Instalación con UV
 
 1. **Clonar el repositorio**:
    ```bash
-   git clone <url-del-repositorio>
-   cd platzi-course
+   git clone https://github.com/johnometalman/johnometalman-fastapi.git
+   puedes renombrar la carpeta como desees
    ```
 
 2. **Instalar dependencias con UV**:
@@ -32,14 +53,9 @@ Aplicación de pruebas desarrollada durante el curso de FastAPI de Platzi. Este 
 
    Esto creará un entorno virtual e instalará todas las dependencias especificadas en `pyproject.toml`.
 
-3. **Activar el entorno virtual** (si no se activa automáticamente):
-   ```bash
-   source .venv/bin/activate  # En macOS/Linux
-   # o
-   .venv\Scripts\activate     # En Windows
-   ```
-
 ## Ejecutar el proyecto
+
+El path del proyecto esta en la carpeta app, por eso app.main
 
 ```bash
 uv run uvicorn app.main:app --reload
@@ -79,17 +95,16 @@ platzi-course/
 - **pytest**: Framework de testing
 - **httpx2**: Cliente HTTP para pruebas
 
-## Autenticación
-
-El endpoint root (`/`) requiere autenticación básica HTTP:
-- Usuario: `johnometalman`
-- Contraseña: `123456test`
-
 ## Testing
 
-Ejecutar tests:
+Ejecutar todos los tests:
 ```bash
 uv run pytest
+```
+
+Ejecutar tests con la ruta detallada y con el flag "-v" ejemplo:
+```bash
+uv run pytest app/tests/test_customers.py -v
 ```
 
 ## Licencia
