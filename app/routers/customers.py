@@ -8,7 +8,11 @@ router = APIRouter()
 
 # db_customers: list[Customer] = []
 
-@router.post("/", response_model=Customer, tags=["customers"])
+@router.post("/customers", 
+    response_model=Customer, 
+    tags=["customers"],
+    status_code=status.HTTP_201_CREATED
+)
 async def create_customer(customer_data: CustomerCreate, session: SessionDep):
     customer = Customer.model_validate(customer_data.model_dump())
     session.add(customer)
@@ -16,7 +20,11 @@ async def create_customer(customer_data: CustomerCreate, session: SessionDep):
     session.refresh(customer)
     return customer
 
-@router.get("/customers/{customer_id}", response_model=Customer, tags=["customers"])
+@router.get("/customers/{customer_id}", 
+    response_model=Customer, 
+    status_code=status.HTTP_200_OK,
+    tags=["customers"]
+)
 async def read_customer(customer_id: int, session: SessionDep):
     customer = session.get(Customer, customer_id)
     if not customer:
