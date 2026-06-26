@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
 from models import Transaction, TransactionCreate, Customer
 from db import SessionDep
 from sqlmodel import select
@@ -32,10 +32,14 @@ async def create_transaction(transaction_data: TransactionCreate, session: Sessi
 
     
 
-
+# ahora estamos implementando la paginación con skip y limit 
 @router.get("/transactions", status_code=status.HTTP_201_CREATED, tags=["transactions"])
-async def list_transaction(session: SessionDep):
-    query = select(Transaction)
+async def list_transaction(
+    session: SessionDep, 
+    skip: int = Query(0, description="registros a omitir"), # le decimos cuantos registros omiti, por defecto 0
+    limit: int = Query(10, description="número de registros a devolver"),
+):
+    query = select(Transaction).offset(skip).limit(limit) #Offset es para usar el skip y Limit para usar el limit
     transactions = session.exec(query).all()
     return transactions
     
