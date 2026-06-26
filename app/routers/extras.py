@@ -4,10 +4,6 @@ from datetime import datetime
 
 router = APIRouter()
 
-@router.get("/", tags=["extras"])
-async def root():
-    return {"message": "Hola John"}
-
 
 country_timezones = {
     "CO": "America/Bogota",
