@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
 from sqlmodel import select
 
-from models import Customer, CustomerCreate, CustomerUpdate, Plan, CustomerPlan
+from models import Customer, CustomerCreate, CustomerUpdate, Plan, CustomerPlan, StatusEnum
 from db import SessionDep
 
 router = APIRouter()
@@ -63,7 +63,7 @@ async def list_customers(session: SessionDep):
 
 
 @router.post("/customers/{customer_id}/plans/{plan_id}", tags=["customers"])
-async def subscribe_customer_to_plan(customer_id: int, plan_id: int, session: SessionDep):
+async def subscribe_customer_to_plan(customer_id: int, plan_id: int, session: SessionDep, plan_status: StatusEnum = Query()):
     customer_db = session.get(Customer, customer_id)
     if not customer_db:
         raise HTTPException(
@@ -78,7 +78,8 @@ async def subscribe_customer_to_plan(customer_id: int, plan_id: int, session: Se
         )
     customer_plan_db = CustomerPlan(
         customer_id=customer_db.id,
-        plan_id=plan_db.id
+        plan_id=plan_db.id, 
+        status=plan_status
     )
     session.add(customer_plan_db)
     session.commit()
@@ -87,14 +88,21 @@ async def subscribe_customer_to_plan(customer_id: int, plan_id: int, session: Se
     
 
 @router.get("/customers/{customer_id}/plans/", tags=["customers"])
-async def list_customer_plans(customer_id: int, session: SessionDep):
+async def list_customer_plans(customer_id: int, session: SessionDep, plan_status: StatusEnum = Query()):
     customer_db = session.get(Customer, customer_id)
     if not customer_db:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Customer does not exists"
         )
-    return customer_db.plans
+    query = (
+        select(CustomerPlan)
+        .where(CustomerPlan.customer_id == customer_id)
+        .where(CustomerPlan.status == plan_status)
+    )
+    plans = session.exec(query).all()
+
+    return plans
 
     
     
